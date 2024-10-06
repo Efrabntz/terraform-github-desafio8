@@ -1,3 +1,3 @@
 output "bucket_name"{
-    value : aws_s3_bucket.example.desafio8
+    value : aws_s3_bucket.example.bucket
 }
