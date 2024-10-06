@@ -1,0 +1,45 @@
+name: Terraform
+
+# Disparar el workflow en los eventos de push y pull request hacia la rama 'main'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    # El workflow se ejecutará en un entorno Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar Terraform en el entorno
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      # Paso 3: Iniciar Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Paso 4: Plan de Terraform (verificación)
+      - name: Terraform Plan
+        run: terraform plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_API_TOKEN: ${{ secrets.API_TOKEN }}
+
+      # Paso 5: Aplicar cambios en Terraform (si está en la rama principal)
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_API_TOKEN: ${{ secrets.API_TOKEN }}
