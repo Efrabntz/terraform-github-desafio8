@@ -5,8 +5,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "my-terraform-bucket-desafio8"
-  acl = "private"
+  bucket = "my-example-bucket"
+  acl    = "private"
 }
 
 terraform{
